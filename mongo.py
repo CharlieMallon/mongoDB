@@ -79,7 +79,7 @@ coll = conn[DATABASE][COLLECTION]
 # documents = coll.find({"nationality": "american"})
 
 """ find all records """
-# documents = coll.find()
+documents = coll.find()
 
 for doc in documents:
     print(doc)
