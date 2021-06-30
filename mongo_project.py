@@ -1,5 +1,6 @@
 import os
 import pymongo
+from pymongo.message import delete
 
 # importing environment variables, if env.py exists
 if os.path.exists("env.py"):
@@ -29,7 +30,7 @@ def show_menu():
     return option
 
 
-def find_record():
+def get_record():
     print("")
     first = input("enter first name >")
     last = input("enter last name >")
@@ -73,17 +74,72 @@ def add_record():
         print("Error accessing the database")
 
 
+def find_record():
+    doc = get_record()
+    if doc:
+        print("")
+        # k = key, v = values
+        for k,v in doc.items():
+            if k != "_id":
+                print(k.capitalize() + ": " + v.capitalize())
+
+
+def edit_record():
+    doc = get_record()
+    if doc:
+        update_doc = {}
+        print("")
+        # k = key, v = values
+        for k,v in doc.items():
+            if k != "_id":
+                update_doc[k] = input(k.capitalize() + " [" + v.capitalize() + "] > ")
+                
+                if update_doc[k] == "":
+                    update_doc[k] = v
+        
+        try:
+            coll.update_one(doc, {"$set": update_doc})
+            print("")
+            print("Document updated")
+        except:
+            print("Error accessing the database")
+
+
+def delete_record():
+    doc = get_record()
+    if doc:
+        print("")
+        for k,v in doc.items():
+            if k != "_id":
+                print(k.capitalize() + ": " + v.capitalize())
+        
+        print("")
+        confirmation = input("Is this the document you want to delete?\nY or N > ")
+
+        if confirmation.lower() == "y":
+            try:
+                coll.remove(doc)
+                print("Document Deleted!")
+            except:
+                print("Error accessing the data")
+        else:
+            print("")
+            print("Document not deleted")
+        
+
+
+
 def main_loop():
     while True:
         option = show_menu()
         if option == "1":
             add_record()
         elif option == "2":
-            print("you have selected option 2")
+            find_record()
         elif option == "3":
-            print("you have selected option 3")
+            edit_record()
         elif option == "4":
-            print("you have selected option 4")
+            delete_record()
         elif option == "5":
             conn.close()
             break
