@@ -1,3 +1,4 @@
+# importing main dependencies and systems used
 import os
 import pymongo
 from pymongo.message import delete
@@ -11,6 +12,7 @@ MONGO_URI = os.environ.get("MONGO_URI")
 DATABASE = "myFirstDB"
 COLLECTION = "celebrities"
 
+# connecting to my database on mongoDB using the env varables
 def mongo_connect(url):
     try:
         conn = pymongo.MongoClient(url)
@@ -18,6 +20,8 @@ def mongo_connect(url):
     except pymongo.errors.ConectionFailure as e:
         print("Could not connect to MongoDB: %s") % e
 
+
+# shows the options for this menu
 def show_menu():
     print("")
     print("1. Add a record")
@@ -30,6 +34,8 @@ def show_menu():
     return option
 
 
+# get_record function goes and gets a user defined record and stores the record
+# in a variable called doc that can be called by the other functions.
 def get_record():
     print("")
     first = input("enter first name >")
@@ -46,6 +52,8 @@ def get_record():
     
     return doc
 
+
+# add record adds a new record to the database
 def add_record():
     print("")
     first = input("enter first name >")
@@ -74,6 +82,7 @@ def add_record():
         print("Error accessing the database")
 
 
+# find_record displays the results of the get_record function to the user
 def find_record():
     doc = get_record()
     if doc:
@@ -84,6 +93,9 @@ def find_record():
                 print(k.capitalize() + ": " + v.capitalize())
 
 
+# edit_record edits the record the user requested.  It displays the record before
+# before changing it so the user knows what they are changing. if input is left blank
+# doesn't overwrite the original input.
 def edit_record():
     doc = get_record()
     if doc:
@@ -105,6 +117,8 @@ def edit_record():
             print("Error accessing the database")
 
 
+# delete_record deletes the record from the database.  Uses user conformation
+# to ensure correct record is deleted.
 def delete_record():
     doc = get_record()
     if doc:
@@ -125,10 +139,9 @@ def delete_record():
         else:
             print("")
             print("Document not deleted")
-        
 
 
-
+# this is the main desplay loop to show the menu.  It includes an exit function.
 def main_loop():
     while True:
         option = show_menu()
